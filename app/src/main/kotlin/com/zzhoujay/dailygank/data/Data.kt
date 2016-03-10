@@ -19,13 +19,21 @@ interface Provider<T> {
 
     fun persistence(): Persistence<String, T>
 
-    fun get(): T
+    fun get(): T?
+
+    fun set(t: T)
 
 }
 
 class DailyProvider(val day: Date) : Provider<DailyGank> {
 
     val calendar: Calendar
+    var daily: DailyGank? = null
+
+    override fun set(t: DailyGank) {
+        this.daily = t
+    }
+
 
     init {
         calendar = Calendar.getInstance()
@@ -49,8 +57,8 @@ class DailyProvider(val day: Date) : Provider<DailyGank> {
     }
 
 
-    override fun get(): DailyGank {
-        throw UnsupportedOperationException()
+    override fun get(): DailyGank? {
+        return daily
     }
 
 }
