@@ -12,7 +12,7 @@ interface Persistence<K, V> {
 
     fun load(k: K): V?
 
-    fun store(k: K, v: V)
+    fun store(k: K, v: V?)
 
 }
 
@@ -25,8 +25,9 @@ class DailyPersistence : Persistence<String, DailyGank> {
         return null
     }
 
-    override fun store(k: String, v: DailyGank) {
-        IOKit.writeObjectToFile(File(App.app.cacheDir, "$k.cache"), v)
+    override fun store(k: String, v: DailyGank?) {
+        if (v != null)
+            IOKit.writeObjectToFile(File(App.app.cacheDir, "$k.cache"), v)
     }
 
 }
