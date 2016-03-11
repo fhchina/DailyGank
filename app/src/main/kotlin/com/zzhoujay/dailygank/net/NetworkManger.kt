@@ -5,6 +5,7 @@ import com.zzhoujay.dailygank.util.NetworkRequestFailureException
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by zhou on 16-3-9.
@@ -16,6 +17,7 @@ object NetworkManger {
         val cache = Cache(App.app.cacheDir, 1024 * 1024 * 10)
         OkHttpClient.Builder()
                 .cache(cache)
+                .connectTimeout(5, TimeUnit.SECONDS)
                 .build()
     }
 

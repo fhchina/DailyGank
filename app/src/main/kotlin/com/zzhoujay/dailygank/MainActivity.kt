@@ -23,11 +23,12 @@ class MainActivity : AppCompatActivity() {
         val dailyAdapter = DailyAdapter(this)
         recyclerView.adapter = dailyAdapter
 
-//        Glide.with(this).load("http://ww4.sinaimg.cn/large/7a8aed7bjw1f1bdal8i3nj20f00lf77g.jpg").into(image)
+        //        Glide.with(this).load("http://ww4.sinaimg.cn/large/7a8aed7bjw1f1bdal8i3nj20f00lf77g.jpg").into(image)
         async() {
             val c = Calendar.getInstance()
+            c.set(Calendar.DAY_OF_MONTH, 11)
             val provider = DailyProvider(c.time)
-            val r = DataManager.load(provider, true)
+            val r = DataManager.load(provider, true, false)
             val g = r?.typeOfGanks("福利")
             uiThread {
                 dailyAdapter.daily = r
