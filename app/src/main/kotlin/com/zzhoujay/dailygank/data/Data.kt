@@ -2,14 +2,12 @@ package com.zzhoujay.dailygank.data
 
 import com.zzhoujay.dailygank.common.Config
 import com.zzhoujay.dailygank.model.DailyGank
-import com.zzhoujay.dailygank.model.Gank
 import com.zzhoujay.dailygank.net.NetworkManger
 import com.zzhoujay.dailygank.persistence.DailyPersistence
 import com.zzhoujay.dailygank.persistence.Persistence
 import com.zzhoujay.dailygank.util.DateKit
 import com.zzhoujay.dailygank.util.HashKit
 import com.zzhoujay.dailygank.util.JsonKit
-import com.zzhoujay.dailygank.util.NetworkRequestFailureException
 import okhttp3.Request
 import java.util.*
 
