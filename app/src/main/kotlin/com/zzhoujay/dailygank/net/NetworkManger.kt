@@ -1,6 +1,5 @@
 package com.zzhoujay.dailygank.net
 
-import com.alibaba.fastjson.JSON
 import com.zzhoujay.dailygank.App
 import com.zzhoujay.dailygank.util.NetworkRequestFailureException
 import okhttp3.Cache
@@ -29,11 +28,6 @@ object NetworkManger {
         } else {
             throw NetworkRequestFailureException(response.message())
         }
-    }
-
-    fun<T> requestObjectSync(request: Request, clazz: Class<T>): T {
-        val result = requestStringSync(request)
-        return JSON.parseObject(result, clazz)
     }
 
 }

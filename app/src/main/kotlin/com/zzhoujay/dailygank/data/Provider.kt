@@ -103,7 +103,7 @@ class DateProvider : UniversalProvider<Array<Date>>(Config.Const.date_cache_file
                 .get()
                 .url(Config.Url.history_url)
                 .build()
-        val result = NetworkManger.requestObjectSync(request, DateResult::class.java)
+        val result = JsonKit.generateDate(NetworkManger.requestStringSync(request))
         if (result.error) {
             throw RuntimeException("request data failure")
         }

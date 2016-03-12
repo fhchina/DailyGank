@@ -7,7 +7,8 @@ import android.view.View
 import com.bumptech.glide.Glide
 import com.zzhoujay.dailygank.data.DailyProvider
 import com.zzhoujay.dailygank.data.DataManager
-import com.zzhoujay.dailygank.ui.adapter.DailyAdapter
+import com.zzhoujay.dailygank.data.DateProvider
+import com.zzhoujay.dailygank.ui.adapter.*
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.async
 import org.jetbrains.anko.uiThread
@@ -22,20 +23,39 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         val dailyAdapter = DailyAdapter(this)
-        recyclerView.adapter = dailyAdapter
+        val loadingAdapter = LoadingAdapter(this)
+        val dateAdapter = DateAdapter(this)
+        val statusAdapter = StatusAdapter(Status.loading.name to loadingAdapter,
+                Status.normal.name to dailyAdapter,
+                Status.date.name to dateAdapter)
+        val handlerAdapter = HandlerAdapter(this, statusAdapter)
 
-        //        Glide.with(this).load("http://ww4.sinaimg.cn/large/7a8aed7bjw1f1bdal8i3nj20f00lf77g.jpg").into(image)
+        recyclerView.adapter = handlerAdapter
+        //
+        //        async() {
+        ////            val c = Calendar.getInstance()
+        ////            c.set(Calendar.DAY_OF_MONTH, 11)
+        ////            val provider = DailyProvider(c.time)
+        ////            val r = DataManager.load(provider)
+        ////            val g = r?.typeOfGanks("福利")
+        //
+        //            val p1=DateProvider()
+        //            val r1=DataManager.load(p1)
+        //            uiThread {
+        //                dateAdapter.dates=r1
+        //                statusAdapter.switch(Status.date.name)
+        ////                dailyAdapter.daily = r
+        ////                if (g != null) {
+        ////                    Glide.with(this@MainActivity).load(g.url).into(image)
+        ////                }
+        //            }
+        //        }
         async() {
-            val c = Calendar.getInstance()
-            c.set(Calendar.DAY_OF_MONTH, 11)
-            val provider = DailyProvider(c.time)
-            val r = DataManager.load(provider, true, false)
-            val g = r?.typeOfGanks("福利")
+            val provider = DateProvider()
+            val r = DataManager.load(provider)
             uiThread {
-                dailyAdapter.daily = r
-                if (g != null) {
-                    Glide.with(this@MainActivity).load(g.url).into(image)
-                }
+                dateAdapter.dates = r
+                statusAdapter.switch(Status.date.name)
             }
         }
 

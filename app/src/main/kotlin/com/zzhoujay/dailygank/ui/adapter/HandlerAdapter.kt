@@ -23,7 +23,7 @@ class HandlerAdapter(val context: Context, val adapter: RecyclerView.Adapter<Rec
 
     override fun onBindViewHolder(p0: RecyclerView.ViewHolder?, position: Int) {
         if (position >= 1) {
-            adapter.onBindViewHolder(p0, position)
+            adapter.onBindViewHolder(p0, position-1)
         }
     }
 
@@ -35,7 +35,7 @@ class HandlerAdapter(val context: Context, val adapter: RecyclerView.Adapter<Rec
         if (position == 0) {
             return type_handler
         }
-        return super.getItemViewType(position)
+        return adapter.getItemViewType(position)
     }
 
     class Holder(val root: View) : RecyclerView.ViewHolder(root) {

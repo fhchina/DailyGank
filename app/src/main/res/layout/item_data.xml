@@ -10,10 +10,10 @@
         android:id="@+id/time"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_margin="12dp"
         android:layout_weight="1"
         android:text="2016年3月15日"
-        android:textSize="@dimen/material_body" />
+        android:textSize="@dimen/material_sub_head" />
 
     <ImageView
         android:id="@+id/checked"

@@ -6,20 +6,18 @@ import java.io.*
 /**
  * Created by zhou on 16-3-9.
  */
-object IOKit{
+object IOKit {
 
     fun writeObjectToFile(file: File, obj: Serializable) {
-        if (file.exists()) {
-            var oos: ObjectOutputStream? = null
-            try {
-                oos = ObjectOutputStream(FileOutputStream(file))
-                oos.writeObject(obj)
-                oos.flush()
-            } catch(e: Exception) {
-                Log.i("writeObjectToFile", "error", e)
-            } finally {
-                oos?.close()
-            }
+        var oos: ObjectOutputStream? = null
+        try {
+            oos = ObjectOutputStream(FileOutputStream(file))
+            oos.writeObject(obj)
+            oos.flush()
+        } catch(e: Exception) {
+            Log.i("writeObjectToFile", "error", e)
+        } finally {
+            oos?.close()
         }
     }
 

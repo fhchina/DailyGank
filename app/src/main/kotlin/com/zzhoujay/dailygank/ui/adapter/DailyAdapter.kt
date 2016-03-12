@@ -11,9 +11,6 @@ import com.zzhoujay.dailygank.R
 import com.zzhoujay.dailygank.model.DailyGank
 import com.zzhoujay.dailygank.util.TextKit
 import kotlinx.android.synthetic.main.item_daily.view.*
-import kotlinx.android.synthetic.main.item_data.view.*
-import kotlinx.android.synthetic.main.item_handler.view.*
-import java.util.*
 
 /**
  * Created by zhou on 16-3-9.
@@ -26,25 +23,17 @@ class DailyAdapter(val context: Context, dailyGank: DailyGank? = null) : Recycle
             notifyDataSetChanged()
         }
 
-    var status: Status = Status.loading
-
-    var dates: Array<Date>? = null
-
     init {
         this.daily = dailyGank
     }
 
     override fun getItemCount(): Int {
-        return (daily?.size() ?: 0) + 1
+        return daily?.size() ?: 0
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, type: Int): RecyclerView.ViewHolder? {
-        val holder: RecyclerView.ViewHolder;
-        if (type == type_top) {
-            holder = HandlerHolder(LayoutInflater.from(context).inflate(R.layout.item_handler, parent, false))
-        } else {
-            holder = Holder(LayoutInflater.from(context).inflate(R.layout.item_daily, parent, false))
-        }
+    override fun onCreateViewHolder(parent: ViewGroup?, type: Int): Holder? {
+        val holder: Holder;
+        holder = Holder(LayoutInflater.from(context).inflate(R.layout.item_daily, parent, false))
         return holder
     }
 
@@ -52,14 +41,6 @@ class DailyAdapter(val context: Context, dailyGank: DailyGank? = null) : Recycle
         if (holder is Holder) {
             holder.title.text = daily!!.type(position - 1)
             holder.content.text = TextKit.generate(daily!!.ganks(position - 1), context.getColor(R.color.material_lightBlue_500))
-        }
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        if (position == 0) {
-            return type_top
-        } else {
-            return type_item
         }
     }
 
@@ -76,35 +57,4 @@ class DailyAdapter(val context: Context, dailyGank: DailyGank? = null) : Recycle
         }
     }
 
-    class HandlerHolder(val root: View) : RecyclerView.ViewHolder(root) {
-
-        val title: TextView
-
-        init {
-            title = root.handler_title
-        }
-    }
-
-    class DataHolder(val root: View) : RecyclerView.ViewHolder(root) {
-
-        val time: TextView
-
-        init {
-            time = root.time
-        }
-
-    }
-
-    class LoadingHolder(val root: View) : RecyclerView.ViewHolder(root) {
-
-    }
-
-    companion object {
-        const val type_top = -1
-        const val type_item = 0
-    }
-
-    enum class Status {
-        loading, data, normal
-    }
 }

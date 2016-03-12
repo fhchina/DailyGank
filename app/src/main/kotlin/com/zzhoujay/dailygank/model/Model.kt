@@ -2,21 +2,21 @@ package com.zzhoujay.dailygank.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.alibaba.fastjson.annotation.JSONField
+import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 import java.util.*
 
 /**
  * Created by zhou on 16-3-9.
  */
-data class Gank(@JSONField(name = "_id")
+data class Gank(@SerializedName("_id")
                 var Id: String,
-                @JSONField(name = "_ns")
+                @SerializedName("_ns")
                 var Ns: String,
-                @JSONField(name = "createdAt", format = "yyyy-MM-dd'T'HH:mm:ss.SSS")
+                @SerializedName("createdAt")
                 var createdTime: Date,
                 var desc: String,
-                @JSONField(name = "publishedAt", format = "yyyy-MM-dd'T'HH:mm:ss.SSS")
+                @SerializedName("publishedAt")
                 var publishedTime: Date,
                 var type: String,
                 var url: String,
@@ -84,6 +84,4 @@ data class DailyGank(val types: Array<String>, val ganks: Array<Array<Gank>>) : 
 data class Result(val error: Boolean, val daily: DailyGank) : Serializable
 
 
-data class DateResult(var error: Boolean, var history: Array<Date>) : Serializable {
-    constructor() : this(true, emptyArray())
-}
+data class DateResult(val error: Boolean, val history: Array<Date>) : Serializable

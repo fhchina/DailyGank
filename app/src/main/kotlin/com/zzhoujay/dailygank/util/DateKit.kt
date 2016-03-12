@@ -14,5 +14,13 @@ object DateKit {
     fun formatDateToDay(date: Date): String {
         return dayFormat.format(date)
     }
+
+    fun parserDateFromDay(str: String): Date {
+        return try {
+            dayFormat.parse(str)
+        } catch(e: Exception) {
+            Date()
+        }
+    }
 }
 

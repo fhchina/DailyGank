@@ -28,7 +28,7 @@ object Config {
 
     object Const {
 
-        const val date_cache_file_name = "dates.cache"
+        const val date_cache_file_name = "dates"
 
     }
 

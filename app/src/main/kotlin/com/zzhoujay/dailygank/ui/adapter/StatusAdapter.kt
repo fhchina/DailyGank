@@ -40,6 +40,12 @@ class StatusAdapter(vararg adapterMap: Pair<String, RecyclerView.Adapter<Recycle
         return currAdapter?.onCreateViewHolder(p0, p1)
     }
 
+    override fun getItemViewType(position: Int): Int {
+        return currAdapter?.hashCode() ?: super.getItemViewType(position)
+    }
+}
 
+enum class Status {
+    normal, loading, date
 }
 
