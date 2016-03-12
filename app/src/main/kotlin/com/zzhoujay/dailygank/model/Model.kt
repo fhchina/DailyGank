@@ -82,3 +82,8 @@ data class DailyGank(val types: Array<String>, val ganks: Array<Array<Gank>>) : 
 }
 
 data class Result(val error: Boolean, val daily: DailyGank) : Serializable
+
+
+data class DateResult(var error: Boolean, var history: Array<Date>) : Serializable {
+    constructor() : this(true, emptyArray())
+}

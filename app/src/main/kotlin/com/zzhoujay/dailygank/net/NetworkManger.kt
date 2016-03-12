@@ -1,5 +1,6 @@
 package com.zzhoujay.dailygank.net
 
+import com.alibaba.fastjson.JSON
 import com.zzhoujay.dailygank.App
 import com.zzhoujay.dailygank.util.NetworkRequestFailureException
 import okhttp3.Cache
@@ -13,7 +14,7 @@ import java.util.concurrent.TimeUnit
 
 object NetworkManger {
 
-    val client: OkHttpClient by lazy {
+    private val client: OkHttpClient by lazy {
         val cache = Cache(App.app.cacheDir, 1024 * 1024 * 10)
         OkHttpClient.Builder()
                 .cache(cache)
@@ -28,6 +29,11 @@ object NetworkManger {
         } else {
             throw NetworkRequestFailureException(response.message())
         }
+    }
+
+    fun<T> requestObjectSync(request: Request, clazz: Class<T>): T {
+        val result = requestStringSync(request)
+        return JSON.parseObject(result, clazz)
     }
 
 }

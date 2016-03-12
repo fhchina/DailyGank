@@ -3,6 +3,7 @@ package com.zzhoujay.dailygank
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.view.View
 import com.bumptech.glide.Glide
 import com.zzhoujay.dailygank.data.DailyProvider
 import com.zzhoujay.dailygank.data.DataManager

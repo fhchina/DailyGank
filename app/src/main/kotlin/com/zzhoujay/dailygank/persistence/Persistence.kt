@@ -4,6 +4,8 @@ import com.zzhoujay.dailygank.App
 import com.zzhoujay.dailygank.model.DailyGank
 import com.zzhoujay.dailygank.util.IOKit
 import java.io.File
+import java.io.Serializable
+import java.util.*
 
 /**
  * Created by zhou on 16-3-9.
@@ -16,19 +18,23 @@ interface Persistence<K, V> {
 
 }
 
-class DailyPersistence : Persistence<String, DailyGank> {
-    override fun load(k: String): DailyGank? {
-        val daily = IOKit.readObjectFromFile(File(App.app.cacheDir, "$k.cache}"))
-        if (daily != null && daily is DailyGank) {
-            return daily
+open class ObjectPersistence<T : Serializable> : Persistence<String, T> {
+
+    override fun load(k: String): T? {
+        val t = IOKit.readObjectFromFile(File(App.app.cacheDir, "$k.cache"))
+        return try {
+            t as T
+        } catch(e: Exception) {
+            null
         }
-        return null
     }
 
-    override fun store(k: String, v: DailyGank?) {
+    override fun store(k: String, v: T?) {
         if (v != null)
             IOKit.writeObjectToFile(File(App.app.cacheDir, "$k.cache"), v)
     }
-
 }
 
+class DailyPersistence : ObjectPersistence<DailyGank>()
+
+class DatePersistence : ObjectPersistence<Array<Date>>()

@@ -11,7 +11,9 @@ import com.zzhoujay.dailygank.R
 import com.zzhoujay.dailygank.model.DailyGank
 import com.zzhoujay.dailygank.util.TextKit
 import kotlinx.android.synthetic.main.item_daily.view.*
+import kotlinx.android.synthetic.main.item_data.view.*
 import kotlinx.android.synthetic.main.item_handler.view.*
+import java.util.*
 
 /**
  * Created by zhou on 16-3-9.
@@ -23,6 +25,10 @@ class DailyAdapter(val context: Context, dailyGank: DailyGank? = null) : Recycle
             field = value
             notifyDataSetChanged()
         }
+
+    var status: Status = Status.loading
+
+    var dates: Array<Date>? = null
 
     init {
         this.daily = dailyGank
@@ -79,8 +85,26 @@ class DailyAdapter(val context: Context, dailyGank: DailyGank? = null) : Recycle
         }
     }
 
+    class DataHolder(val root: View) : RecyclerView.ViewHolder(root) {
+
+        val time: TextView
+
+        init {
+            time = root.time
+        }
+
+    }
+
+    class LoadingHolder(val root: View) : RecyclerView.ViewHolder(root) {
+
+    }
+
     companion object {
         const val type_top = -1
         const val type_item = 0
+    }
+
+    enum class Status {
+        loading, data, normal
     }
 }

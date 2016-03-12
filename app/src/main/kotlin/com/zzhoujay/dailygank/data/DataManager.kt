@@ -27,7 +27,7 @@ object DataManager {
             r = loadFromNetwork(provider)
         }
         if (userCache && r == null) {
-            r = provider.persistence().load(provider.key())
+            r = provider.load(provider.key())
         }
         if (!fromNetwork && r == null) {
             r = loadFromNetwork(provider)
