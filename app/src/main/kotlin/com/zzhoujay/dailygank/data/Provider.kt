@@ -74,19 +74,12 @@ abstract class UniversalProvider<T : Serializable>(val key: String) : Persistenc
 }
 
 
-class DailyProvider(val day: Date) : UniversalProvider<DailyGank>(HashKit.md5(DateKit.formatDateToDay(day))) {
-
-    val calendar: Calendar
-
-    init {
-        calendar = Calendar.getInstance()
-        calendar.time = day
-    }
+class DailyProvider(val day: Calendar) : UniversalProvider<DailyGank>(HashKit.md5("year:${day.get(Calendar.YEAR)}-month:${day.get(Calendar.MONTH)}-day:${day.get(Calendar.DAY_OF_MONTH)}")) {
 
     override fun loadFromNetwork(): DailyGank {
         val request = Request.Builder()
                 .get()
-                .url(String.format(Config.Url.daily_url, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH)))
+                .url(String.format(Config.Url.daily_url, day.get(Calendar.YEAR), day.get(Calendar.MONTH) + 1, day.get(Calendar.DAY_OF_MONTH)))
                 .build()
         val result = JsonKit.generate(NetworkManger.requestStringSync(request))
         if (result.error) {

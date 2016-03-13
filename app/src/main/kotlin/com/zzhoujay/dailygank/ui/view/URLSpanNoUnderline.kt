@@ -3,6 +3,7 @@ package com.zzhoujay.dailygank.ui.view
 import android.os.Parcel
 import android.text.TextPaint
 import android.text.style.URLSpan
+import android.view.View
 
 /**
  * Created by zhou on 16-3-11.

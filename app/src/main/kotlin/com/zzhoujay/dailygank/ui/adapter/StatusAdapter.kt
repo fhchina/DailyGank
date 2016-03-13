@@ -7,25 +7,65 @@ import java.util.*
 /**
  * Created by zhou on 16-3-12.
  */
-class StatusAdapter(vararg adapterMap: Pair<String, RecyclerView.Adapter<RecyclerView.ViewHolder>>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class StatusAdapter(vararg adapterMap: Pair<Status, RecyclerView.Adapter<RecyclerView.ViewHolder>>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val adapters: HashMap<String, RecyclerView.Adapter<RecyclerView.ViewHolder>>
     private var currAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>? = null
+    var currStatus: Status
 
-    init {
-        adapters = HashMap(adapterMap.size)
-        for (v in adapterMap) {
-            adapters[v.first] = v.second
+    val dataObserver: RecyclerView.AdapterDataObserver = object : RecyclerView.AdapterDataObserver() {
+        override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
+            super.onItemRangeMoved(fromPosition, toPosition, itemCount)
+            notifyItemRangeChanged(fromPosition, toPosition + itemCount)
         }
-        if (adapterMap.size > 0) {
-            currAdapter = adapterMap[0].second
+
+        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+            super.onItemRangeInserted(positionStart, itemCount)
+            notifyItemRangeInserted(positionStart, itemCount)
+        }
+
+        override fun onChanged() {
+            super.onChanged()
+            notifyDataSetChanged()
+        }
+
+        override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
+            super.onItemRangeRemoved(positionStart, itemCount)
+            notifyItemRangeRemoved(positionStart, itemCount)
+        }
+
+        override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
+            super.onItemRangeChanged(positionStart, itemCount)
+            notifyItemRangeChanged(positionStart, itemCount)
+        }
+
+        override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) {
+            super.onItemRangeChanged(positionStart, itemCount, payload)
+            notifyItemRangeChanged(positionStart, itemCount, payload)
         }
     }
 
-    fun switch(status: String) {
-        val adapter = adapters[status]
-        currAdapter = adapter
-        notifyDataSetChanged()
+    init {
+        if (adapterMap.size > 0) {
+            currAdapter = adapterMap[0].second
+            currStatus = adapterMap[0].first
+        } else {
+            throw RuntimeException("至少需要一个元素")
+        }
+        adapters = HashMap(adapterMap.size)
+        for (v in adapterMap) {
+            adapters[v.first.name] = v.second
+            v.second.registerAdapterDataObserver(dataObserver)
+        }
+    }
+
+    fun switch(status: Status) {
+        if (!status.equals(currStatus)) {
+            val adapter = adapters[status.name]
+            currAdapter = adapter
+            currStatus = status
+            notifyDataSetChanged()
+        }
     }
 
     override fun onBindViewHolder(p0: RecyclerView.ViewHolder?, p1: Int) {
@@ -42,6 +82,10 @@ class StatusAdapter(vararg adapterMap: Pair<String, RecyclerView.Adapter<Recycle
 
     override fun getItemViewType(position: Int): Int {
         return currAdapter?.hashCode() ?: super.getItemViewType(position)
+    }
+
+    override fun registerAdapterDataObserver(observer: RecyclerView.AdapterDataObserver?) {
+        super.registerAdapterDataObserver(observer)
     }
 }
 

@@ -29,6 +29,7 @@ object Config {
     object Const {
 
         const val date_cache_file_name = "dates"
+        const val min_load_time = 400
 
     }
 

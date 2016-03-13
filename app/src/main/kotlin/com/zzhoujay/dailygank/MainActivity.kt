@@ -1,10 +1,13 @@
 package com.zzhoujay.dailygank
 
 import android.os.Bundle
+import android.os.Handler
+import android.support.design.widget.BottomSheetBehavior
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.bumptech.glide.Glide
+import com.zzhoujay.dailygank.common.Config
 import com.zzhoujay.dailygank.data.DailyProvider
 import com.zzhoujay.dailygank.data.DataManager
 import com.zzhoujay.dailygank.data.DateProvider
@@ -16,6 +19,13 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
+    val dateProvider: DateProvider by lazy {
+        DateProvider()
+    }
+
+    val bottomSheetCallback: TaskQueueBottomSheetCallback by lazy { TaskQueueBottomSheetCallback() }
+    val handler: Handler by lazy { Handler(mainLooper) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -25,41 +35,132 @@ class MainActivity : AppCompatActivity() {
         val dailyAdapter = DailyAdapter(this)
         val loadingAdapter = LoadingAdapter(this)
         val dateAdapter = DateAdapter(this)
-        val statusAdapter = StatusAdapter(Status.loading.name to loadingAdapter,
-                Status.normal.name to dailyAdapter,
-                Status.date.name to dateAdapter)
+        val statusAdapter = StatusAdapter(Status.loading to loadingAdapter,
+                Status.normal to dailyAdapter,
+                Status.date to dateAdapter)
         val handlerAdapter = HandlerAdapter(this, statusAdapter)
 
+        val bsb = BottomSheetBehavior.from(recyclerView)
+        bsb.setBottomSheetCallback(bottomSheetCallback)
+
+
+        handlerAdapter.onHandlerClickListener = {
+            when (bsb.state) {
+                BottomSheetBehavior.STATE_COLLAPSED -> bsb.state = BottomSheetBehavior.STATE_EXPANDED
+                BottomSheetBehavior.STATE_EXPANDED -> bsb.state = BottomSheetBehavior.STATE_COLLAPSED
+            }
+        }
+
+        fun loadNormal(date: Date? = null, immediatelyShow: Boolean = false) {
+            val loadStartTime = System.currentTimeMillis()
+            async() {
+                val c = Calendar.getInstance()
+                if (date != null) {
+                    c.time = date
+                } else {
+                    val dates = DataManager.load(dateProvider)
+                    if (dates != null && dates.size > 0) {
+                        c.time = dates[0]
+                    }
+                }
+                val provider = DailyProvider(c)
+                val r = DataManager.load(provider)
+                val g = r?.typeOfGanks("福利")
+                uiThread {
+                    val currTime = System.currentTimeMillis()
+                    val dt = currTime - loadStartTime
+
+                    fun switchToNormal() {
+                        statusAdapter.switch(Status.normal)
+                        dailyAdapter.daily = r
+                        if (g != null) {
+                            Glide.with(this@MainActivity).load(g.url).into(image)
+                        }
+                    }
+                    if (!immediatelyShow && dt < Config.Const.min_load_time) {
+                        handler.postDelayed({
+                            switchToNormal()
+                        }, Config.Const.min_load_time - dt)
+                    } else {
+                        switchToNormal()
+                    }
+                }
+            }
+        }
+
+        fun loadDate() {
+            val loadStartTime = System.currentTimeMillis()
+            async() {
+                val r = DataManager.load(dateProvider)
+                uiThread {
+                    val currTime = System.currentTimeMillis()
+                    val dt = currTime - loadStartTime
+
+                    fun switchToDate() {
+                        dateAdapter.dates = r
+                        statusAdapter.switch(Status.date)
+                    }
+                    if (dt < Config.Const.min_load_time) {
+                        handler.postDelayed({
+                            switchToDate()
+                        }, Config.Const.min_load_time - dt)
+                    } else {
+                        switchToDate()
+                    }
+                }
+            }
+        }
+
+        fun switch(fromNormal: Boolean = true, date: Date? = null) {
+            statusAdapter.switch(Status.loading)
+            if (fromNormal) {
+                loadDate()
+            } else {
+                loadNormal(date)
+            }
+        }
+
+        dateAdapter.onItemCheckedListener = {
+            switch(false, it)
+        }
+
+        handlerAdapter.onListClickListener = {
+            if (bsb.state == BottomSheetBehavior.STATE_COLLAPSED) {
+                bsb.state = BottomSheetBehavior.STATE_EXPANDED
+                bottomSheetCallback.addTask {
+                    if (statusAdapter.currStatus.equals(Status.normal)) switch()
+                    else if (statusAdapter.currStatus.equals(Status.date)) switch(false)
+                }
+            } else {
+                if (statusAdapter.currStatus.equals(Status.normal)) switch()
+                else if (statusAdapter.currStatus.equals(Status.date)) switch(false)
+            }
+        }
+
         recyclerView.adapter = handlerAdapter
-        //
-        //        async() {
-        ////            val c = Calendar.getInstance()
-        ////            c.set(Calendar.DAY_OF_MONTH, 11)
-        ////            val provider = DailyProvider(c.time)
-        ////            val r = DataManager.load(provider)
-        ////            val g = r?.typeOfGanks("福利")
-        //
-        //            val p1=DateProvider()
-        //            val r1=DataManager.load(p1)
-        //            uiThread {
-        //                dateAdapter.dates=r1
-        //                statusAdapter.switch(Status.date.name)
-        ////                dailyAdapter.daily = r
-        ////                if (g != null) {
-        ////                    Glide.with(this@MainActivity).load(g.url).into(image)
-        ////                }
-        //            }
-        //        }
-        async() {
-            val provider = DateProvider()
-            val r = DataManager.load(provider)
-            uiThread {
-                dateAdapter.dates = r
-                statusAdapter.switch(Status.date.name)
+
+
+        loadNormal(immediatelyShow = true)
+    }
+
+    class TaskQueueBottomSheetCallback : BottomSheetBehavior.BottomSheetCallback() {
+        private val tasks: Queue<(() -> Unit)> by lazy { LinkedList<(() -> Unit)>() }
+
+        fun addTask(t: () -> Unit) {
+            tasks.add (t)
+        }
+
+        override fun onSlide(p0: View, p1: Float) {
+        }
+
+        override fun onStateChanged(p0: View, p1: Int) {
+            if (p1 == BottomSheetBehavior.STATE_EXPANDED) {
+                if (!tasks.isEmpty()) {
+                    tasks.remove().invoke()
+                }
             }
         }
 
     }
-
 
 }

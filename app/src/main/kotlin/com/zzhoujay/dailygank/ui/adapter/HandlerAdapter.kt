@@ -5,25 +5,74 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import com.zzhoujay.dailygank.R
 import kotlinx.android.synthetic.main.item_handler.view.*
+import org.jetbrains.anko.onClick
 
 /**
  * Created by zhou on 16-3-12.
  */
 class HandlerAdapter(val context: Context, val adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    var onHandlerClickListener: ((i: Int) -> Unit)? = null
+    var onListClickListener: ((i: Int) -> Unit)? = null
+
+    val dataObserver: RecyclerView.AdapterDataObserver = object : RecyclerView.AdapterDataObserver() {
+        override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
+            super.onItemRangeMoved(fromPosition, toPosition, itemCount)
+            notifyItemRangeChanged(fromPosition + 1, toPosition + 1 + itemCount)
+        }
+
+        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+            super.onItemRangeInserted(positionStart, itemCount)
+            notifyItemRangeInserted(positionStart + 1, itemCount)
+        }
+
+        override fun onChanged() {
+            super.onChanged()
+            notifyDataSetChanged()
+        }
+
+        override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
+            super.onItemRangeRemoved(positionStart, itemCount)
+            notifyItemRangeRemoved(positionStart + 1, itemCount)
+        }
+
+        override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
+            super.onItemRangeChanged(positionStart, itemCount)
+            notifyItemRangeChanged(positionStart + 1, itemCount)
+        }
+
+        override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) {
+            super.onItemRangeChanged(positionStart, itemCount, payload)
+            notifyItemRangeChanged(positionStart + 1, itemCount, payload)
+        }
+    }
+
+    init {
+        adapter.registerAdapterDataObserver(dataObserver)
+    }
+
+
     override fun onCreateViewHolder(p0: ViewGroup?, type: Int): RecyclerView.ViewHolder? {
         if (type == type_handler) {
-            return Holder(LayoutInflater.from(context).inflate(R.layout.item_handler, p0, false))
+            val holder = Holder(LayoutInflater.from(context).inflate(R.layout.item_handler, p0, false))
+            holder.handlerClickListener = {
+                onHandlerClickListener?.invoke(it)
+            }
+            holder.listClickListener = {
+                onListClickListener?.invoke(it)
+            }
+            return holder
         }
         return adapter.onCreateViewHolder(p0, type)
     }
 
     override fun onBindViewHolder(p0: RecyclerView.ViewHolder?, position: Int) {
         if (position >= 1) {
-            adapter.onBindViewHolder(p0, position-1)
+            adapter.onBindViewHolder(p0, position - 1)
         }
     }
 
@@ -40,10 +89,26 @@ class HandlerAdapter(val context: Context, val adapter: RecyclerView.Adapter<Rec
 
     class Holder(val root: View) : RecyclerView.ViewHolder(root) {
         val title: TextView
+        val list: ImageView
+        val handler: View
+
+        var handlerClickListener: ((i: Int) -> Unit)? = null
+        var listClickListener: ((i: Int) -> Unit)? = null
 
         init {
+            handler = root.root_handler
+            list = root.date_list
             title = root.handler_title
+
+            handler.onClick {
+                handlerClickListener?.invoke(adapterPosition)
+            }
+
+            list.onClick {
+                listClickListener?.invoke(adapterPosition)
+            }
         }
+
     }
 
 

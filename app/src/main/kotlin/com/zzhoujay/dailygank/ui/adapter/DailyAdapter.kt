@@ -20,7 +20,6 @@ class DailyAdapter(val context: Context, dailyGank: DailyGank? = null) : Recycle
     var daily: DailyGank? = null
         set(value) {
             field = value
-            notifyDataSetChanged()
         }
 
     init {
@@ -39,8 +38,8 @@ class DailyAdapter(val context: Context, dailyGank: DailyGank? = null) : Recycle
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
         if (holder is Holder) {
-            holder.title.text = daily!!.type(position - 1)
-            holder.content.text = TextKit.generate(daily!!.ganks(position - 1), context.getColor(R.color.material_lightBlue_500))
+            holder.title.text = daily!!.type(position)
+            holder.content.text = TextKit.generate(daily!!.ganks(position), context.getColor(R.color.material_lightBlue_500))
         }
     }
 
