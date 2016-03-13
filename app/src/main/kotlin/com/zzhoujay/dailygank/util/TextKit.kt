@@ -26,7 +26,7 @@ object TextKit {
             builder.setSpan(URLSpanNoUnderline(gh.url), start, builder.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             builder.setSpan(ForegroundColorSpan(color), start, builder.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             builder.append("（")
-            builder.append(gh.who)
+            builder.append(gh.who?:"null")
             builder.append("）\n")
         }
         return builder

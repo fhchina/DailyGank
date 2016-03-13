@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/transparent"
-        app:behavior_peekHeight="80dp"
+        app:behavior_peekHeight="@dimen/behavior_peekHeight"
         app:layout_behavior="@string/bottom_sheet_behavior" />
 
 

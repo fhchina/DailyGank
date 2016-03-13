@@ -1,6 +1,8 @@
 package com.zzhoujay.dailygank.ui.adapter
 
 import android.content.Context
+import android.content.res.Resources
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
@@ -39,7 +41,7 @@ class DailyAdapter(val context: Context, dailyGank: DailyGank? = null) : Recycle
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
         if (holder is Holder) {
             holder.title.text = daily!!.type(position)
-            holder.content.text = TextKit.generate(daily!!.ganks(position), context.getColor(R.color.material_lightBlue_500))
+            holder.content.text = TextKit.generate(daily!!.ganks(position), ContextCompat.getColor(context,R.color.material_lightBlue_500))
         }
     }
 
@@ -52,7 +54,7 @@ class DailyAdapter(val context: Context, dailyGank: DailyGank? = null) : Recycle
         init {
             title = root.title
             content = root.content
-            title.movementMethod = LinkMovementMethod.getInstance()
+            content.movementMethod = LinkMovementMethod.getInstance()
         }
     }
 

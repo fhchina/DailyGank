@@ -21,7 +21,7 @@ data class Gank(@SerializedName("_id")
                 var type: String,
                 var url: String,
                 var used: Boolean = false,
-                var who: String) : Serializable, Parcelable {
+                var who: String?="") : Serializable, Parcelable {
     constructor(source: Parcel) : this(source.readString(), source.readString(), source.readSerializable() as Date, source.readString(), source.readSerializable() as Date, source.readString(), source.readString(), 1.toByte().equals(source.readByte()), source.readString())
 
     override fun describeContents(): Int {

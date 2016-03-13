@@ -19,9 +19,14 @@
 
     <dimen name="gap_height">1dp</dimen>
 
-    <dimen name="status_bar_height">24dp</dimen>
+    <dimen name="status_bar_height">0dp</dimen>
 
     <dimen name="load_layout_height">70dp</dimen>
 
+    <dimen name="date_item_height">55dp</dimen>
+
     <dimen name="checked_size">40dp</dimen>
+
+    <dimen name="behavior_peekHeight">56dp</dimen>
+
 </resources>
