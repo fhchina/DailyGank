@@ -131,13 +131,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         handlerAdapter.onListClickListener = { v, i ->
-            if (bsb.state == BottomSheetBehavior.STATE_COLLAPSED) {
-                bsb.state = BottomSheetBehavior.STATE_EXPANDED
-                bottomSheetCallback.addTask {
-                    if (statusAdapter.currStatus.equals(Status.normal)) switch()
-                    else if (statusAdapter.currStatus.equals(Status.date)) switch(false)
-                }
-            } else {
+            fun switchWrapper(){
                 if (statusAdapter.currStatus.equals(Status.normal)) {
                     if (v is ImageButton) {
                         v.setImageResource(R.drawable.ic_arrow_back_24dp)
@@ -149,6 +143,14 @@ class MainActivity : AppCompatActivity() {
                     }
                     switch(false)
                 }
+            }
+            if (bsb.state == BottomSheetBehavior.STATE_COLLAPSED) {
+                bsb.state = BottomSheetBehavior.STATE_EXPANDED
+                bottomSheetCallback.addTask {
+                    switchWrapper()
+                }
+            } else {
+                switchWrapper()
             }
         }
 
