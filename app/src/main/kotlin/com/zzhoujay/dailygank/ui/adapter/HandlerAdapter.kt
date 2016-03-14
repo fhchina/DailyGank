@@ -12,6 +12,7 @@ import com.zzhoujay.dailygank.R
 import com.zzhoujay.dailygank.util.DateKit
 import kotlinx.android.synthetic.main.item_handler.view.*
 import org.jetbrains.anko.onClick
+import org.jetbrains.anko.onLongClick
 import java.util.*
 
 /**
@@ -21,9 +22,10 @@ class HandlerAdapter(val context: Context, val adapter: RecyclerView.Adapter<Rec
 
     var onHandlerClickListener: ((i: Int) -> Unit)? = null
     var onListClickListener: ((v: View, i: Int) -> Unit)? = null
+    var onListLongClickListener: (() -> Unit)? = null
     var title: String? = null
         set(value) {
-            field = title
+            field = value
             notifyItemChanged(0)
         }
 
@@ -73,6 +75,9 @@ class HandlerAdapter(val context: Context, val adapter: RecyclerView.Adapter<Rec
             holder.listClickListener = { v, i ->
                 onListClickListener?.invoke(v, i)
             }
+            holder.listLongClickListener = {
+                onListLongClickListener?.invoke()
+            }
             return holder
         }
         return adapter.onCreateViewHolder(p0, type)
@@ -104,6 +109,7 @@ class HandlerAdapter(val context: Context, val adapter: RecyclerView.Adapter<Rec
 
         var handlerClickListener: ((i: Int) -> Unit)? = null
         var listClickListener: ((v: View, i: Int) -> Unit)? = null
+        var listLongClickListener: (() -> Unit)? = null
 
         init {
             handler = root.root_handler
@@ -116,6 +122,14 @@ class HandlerAdapter(val context: Context, val adapter: RecyclerView.Adapter<Rec
 
             list.onClick {
                 listClickListener?.invoke(list, adapterPosition)
+            }
+
+            list.onLongClick {
+                if (listLongClickListener != null) {
+                    (listLongClickListener as () -> Unit).invoke()
+                    true
+                } else
+                    false
             }
         }
 

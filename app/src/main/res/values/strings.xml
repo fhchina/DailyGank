@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">DailyGank</string>
+    <string name="text_url">干货URL</string>
+    <string name="text_desc">对干货内容的描叙</string>
+    <string name="text_who">提交者ID</string>
+
+    <string-array name="type_list">
+        <item>Android</item>
+        <item>iOS</item>
+        <item>休息视频</item>
+        <item>福利</item>
+        <item>拓展资源</item>
+        <item>前端</item>
+        <item>瞎推荐</item>
+        <item>App</item>
+    </string-array>
+
+    <string-array name="debug_list">
+        <item>true</item>
+        <item>false</item>
+    </string-array>
+
+    <string name="text_normal">显示干货</string>
+    <string name="text_date">选择时间</string>
 </resources>
