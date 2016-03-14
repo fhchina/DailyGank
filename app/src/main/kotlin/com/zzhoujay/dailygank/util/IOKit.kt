@@ -2,6 +2,7 @@ package com.zzhoujay.dailygank.util
 
 import android.util.Log
 import java.io.*
+import java.util.*
 
 /**
  * Created by zhou on 16-3-9.
@@ -32,6 +33,13 @@ object IOKit {
             } finally {
                 ois?.close()
             }
+        }
+        return null
+    }
+
+    fun getFileLastModifyTime(file: File): Date? {
+        if (file.exists()) {
+            return Date(file.lastModified())
         }
         return null
     }

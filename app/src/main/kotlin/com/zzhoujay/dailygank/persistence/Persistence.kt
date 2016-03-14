@@ -16,9 +16,14 @@ interface Persistence<K, V> {
 
     fun store(k: K, v: V?)
 
+    fun lastModifyTime(k: K): Date?
 }
 
 open class ObjectPersistence<T : Serializable> : Persistence<String, T> {
+
+    override fun lastModifyTime(k: String): Date? {
+        return IOKit.getFileLastModifyTime(File(App.app.cacheDir, "$k.cache"))
+    }
 
     override fun load(k: String): T? {
         val t = IOKit.readObjectFromFile(File(App.app.cacheDir, "$k.cache"))

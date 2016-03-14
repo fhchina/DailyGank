@@ -5,6 +5,7 @@ import android.os.Handler
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.PopupMenu
 import android.view.View
 import com.bumptech.glide.Glide
 import com.zzhoujay.dailygank.common.Config
@@ -12,8 +13,10 @@ import com.zzhoujay.dailygank.data.DailyProvider
 import com.zzhoujay.dailygank.data.DataManager
 import com.zzhoujay.dailygank.data.DateProvider
 import com.zzhoujay.dailygank.ui.adapter.*
+import com.zzhoujay.dailygank.util.DateKit
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.async
+import org.jetbrains.anko.toast
 import org.jetbrains.anko.uiThread
 import java.util.*
 
@@ -51,14 +54,14 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        fun loadNormal(date: Date? = null, immediatelyShow: Boolean = false) {
+        fun loadNormal(date: Date? = null, immediatelyShow: Boolean = false, updateTime: Int = DataManager.NONE_UPDATE) {
             val loadStartTime = System.currentTimeMillis()
             async() {
                 val c = Calendar.getInstance()
                 if (date != null) {
                     c.time = date
                 } else {
-                    val dates = DataManager.load(dateProvider)
+                    val dates = DataManager.load(dateProvider,updateTime=updateTime)
                     if (dates != null && dates.size > 0) {
                         c.time = dates[0]
                     }
@@ -69,6 +72,10 @@ class MainActivity : AppCompatActivity() {
                 uiThread {
                     val currTime = System.currentTimeMillis()
                     val dt = currTime - loadStartTime
+
+                    if (date != null) {
+                        handlerAdapter.title = DateKit.formatDateToDay(date)
+                    }
 
                     fun switchToNormal() {
                         statusAdapter.switch(Status.normal)
@@ -88,10 +95,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        fun loadDate() {
+        fun loadDate(updateTime: Int = DataManager.NONE_UPDATE) {
             val loadStartTime = System.currentTimeMillis()
             async() {
-                val r = DataManager.load(dateProvider)
+                val r = DataManager.load(dateProvider,updateTime = updateTime)
                 uiThread {
                     val currTime = System.currentTimeMillis()
                     val dt = currTime - loadStartTime
@@ -124,7 +131,7 @@ class MainActivity : AppCompatActivity() {
             switch(false, it)
         }
 
-        handlerAdapter.onListClickListener = {
+        fun switchToDate() {
             if (bsb.state == BottomSheetBehavior.STATE_COLLAPSED) {
                 bsb.state = BottomSheetBehavior.STATE_EXPANDED
                 bottomSheetCallback.addTask {
@@ -137,10 +144,37 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        handlerAdapter.onListClickListener = { v, i ->
+            val popMenu = PopupMenu(this, v)
+            val menu = popMenu.menu
+            if (statusAdapter.currStatus.equals(Status.normal)) {
+                val item = menu.add(0, switch, 0, "切换日期")
+//                item.setIcon(R.drawable.ic_today_24dp)
+            } else {
+                val item = menu.add(0, switch, 0, "显示干货")
+//                item.setIcon(R.drawable.ic_arrow_back_24dp)
+            }
+            val postItem = menu.add(0, post, 1, "提交干货")
+//            postItem.setIcon(R.drawable.ic_cloud_upload_24dp)
+            popMenu.setOnMenuItemClickListener {
+                when (it.itemId) {
+                    switch -> {
+                        switchToDate()
+                        true
+                    }
+                    post -> {
+                        toast("Post")
+                        true
+                    }
+                }
+                false
+            }
+            popMenu.show()
+        }
+
         recyclerView.adapter = handlerAdapter
 
-
-        loadNormal(immediatelyShow = true)
+        loadNormal(immediatelyShow = true,updateTime = DataManager.ONE_DAY)
     }
 
     class TaskQueueBottomSheetCallback : BottomSheetBehavior.BottomSheetCallback() {
@@ -163,4 +197,9 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+
+    companion object {
+        const val switch = 0x345
+        const val post = 0x456
+    }
 }

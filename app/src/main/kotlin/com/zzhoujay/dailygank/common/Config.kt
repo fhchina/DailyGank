@@ -1,7 +1,5 @@
 package com.zzhoujay.dailygank.common
 
-import com.zzhoujay.dailygank.util.HashKit
-
 /**
  * Created by zhou on 16-3-9.
  */

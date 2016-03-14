@@ -5,11 +5,14 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import com.zzhoujay.dailygank.R
+import com.zzhoujay.dailygank.util.DateKit
 import kotlinx.android.synthetic.main.item_handler.view.*
 import org.jetbrains.anko.onClick
+import java.util.*
 
 /**
  * Created by zhou on 16-3-12.
@@ -17,7 +20,12 @@ import org.jetbrains.anko.onClick
 class HandlerAdapter(val context: Context, val adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var onHandlerClickListener: ((i: Int) -> Unit)? = null
-    var onListClickListener: ((i: Int) -> Unit)? = null
+    var onListClickListener: ((v: View, i: Int) -> Unit)? = null
+    var title: String? = null
+        set(value) {
+            field = title
+            notifyItemChanged(0)
+        }
 
     val dataObserver: RecyclerView.AdapterDataObserver = object : RecyclerView.AdapterDataObserver() {
         override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
@@ -62,17 +70,19 @@ class HandlerAdapter(val context: Context, val adapter: RecyclerView.Adapter<Rec
             holder.handlerClickListener = {
                 onHandlerClickListener?.invoke(it)
             }
-            holder.listClickListener = {
-                onListClickListener?.invoke(it)
+            holder.listClickListener = { v, i ->
+                onListClickListener?.invoke(v, i)
             }
             return holder
         }
         return adapter.onCreateViewHolder(p0, type)
     }
 
-    override fun onBindViewHolder(p0: RecyclerView.ViewHolder?, position: Int) {
-        if (position >= 1) {
-            adapter.onBindViewHolder(p0, position - 1)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
+        if (position == 0 && holder is Holder) {
+            holder.title.text = title ?: DateKit.formatDateToDay(Date())
+        } else {
+            adapter.onBindViewHolder(holder, position - 1)
         }
     }
 
@@ -89,11 +99,11 @@ class HandlerAdapter(val context: Context, val adapter: RecyclerView.Adapter<Rec
 
     class Holder(val root: View) : RecyclerView.ViewHolder(root) {
         val title: TextView
-        val list: ImageView
+        val list: ImageButton
         val handler: View
 
         var handlerClickListener: ((i: Int) -> Unit)? = null
-        var listClickListener: ((i: Int) -> Unit)? = null
+        var listClickListener: ((v: View, i: Int) -> Unit)? = null
 
         init {
             handler = root.root_handler
@@ -105,7 +115,7 @@ class HandlerAdapter(val context: Context, val adapter: RecyclerView.Adapter<Rec
             }
 
             list.onClick {
-                listClickListener?.invoke(adapterPosition)
+                listClickListener?.invoke(list, adapterPosition)
             }
         }
 

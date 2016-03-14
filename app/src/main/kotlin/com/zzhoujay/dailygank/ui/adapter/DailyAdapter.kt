@@ -45,7 +45,6 @@ class DailyAdapter(val context: Context, dailyGank: DailyGank? = null) : Recycle
         }
     }
 
-
     class Holder(val root: View) : RecyclerView.ViewHolder(root) {
 
         val title: TextView

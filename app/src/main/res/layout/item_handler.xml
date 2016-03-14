@@ -35,15 +35,16 @@
             android:textColor="@color/material_grey_900"
             android:textSize="@dimen/material_title" />
 
-        <ImageView
+        <ImageButton
             android:id="@+id/date_list"
+            style="@style/MoreMenu"
             android:layout_width="30dp"
             android:layout_height="40dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:clickable="true"
-            app:srcCompat="@drawable/ic_list_24dp"
-            tools:ignore="MissingPrefix" />
+            app:srcCompat="@drawable/ic_more_vert_24dp"
+            tools:ignore="ContentDescription,MissingPrefix" />
 
     </LinearLayout>
 

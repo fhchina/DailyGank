@@ -57,6 +57,10 @@ abstract class PersistenceProvider<T> : Provider<T> {
         return persistence().load(k)
     }
 
+    override fun lastModifyTime(k: String): Date? {
+        return persistence().lastModifyTime(k)
+    }
+
 }
 
 abstract class UniversalProvider<T : Serializable>(val key: String) : PersistenceProvider<T>() {

@@ -10,6 +10,7 @@ import java.util.*
 object DateKit {
 
     val dayFormat: SimpleDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd") }
+    val one_day_time: Int by lazy { 1000 * 24 * 3600 }
 
     fun formatDateToDay(date: Date): String {
         return dayFormat.format(date)
@@ -21,6 +22,10 @@ object DateKit {
         } catch(e: Exception) {
             Date()
         }
+    }
+
+    fun compareDay(d1: Date, d2: Date): Int {
+        return ((d1.time - d2.time) / one_day_time).toInt()
     }
 }
 
