@@ -5,7 +5,6 @@ import android.os.Handler
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.PopupMenu
 import android.view.View
 import android.widget.ImageButton
 import com.bumptech.glide.Glide

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DailyGank</string>
+    <string name="app_name">干货日报</string>
     <string name="text_url">干货URL</string>
     <string name="text_desc">对干货内容的描叙</string>
     <string name="text_who">提交者ID</string>
