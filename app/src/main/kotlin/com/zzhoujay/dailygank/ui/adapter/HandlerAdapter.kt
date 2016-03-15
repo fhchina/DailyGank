@@ -23,6 +23,11 @@ class HandlerAdapter(val context: Context, val adapter: RecyclerView.Adapter<Rec
     var onHandlerClickListener: ((i: Int) -> Unit)? = null
     var onListClickListener: ((v: View, i: Int) -> Unit)? = null
     var onListLongClickListener: (() -> Unit)? = null
+    var isNormal = true
+        set(value) {
+            field = value
+            notifyItemChanged(0)
+        }
     var title: String? = null
         set(value) {
             field = value
@@ -86,6 +91,7 @@ class HandlerAdapter(val context: Context, val adapter: RecyclerView.Adapter<Rec
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
         if (position == 0 && holder is Holder) {
             holder.title.text = title ?: DateKit.formatDateToDay(Date())
+            holder.list.setImageResource(if (isNormal) R.drawable.ic_date_range_black_24px else R.drawable.ic_arrow_back_24dp)
         } else {
             adapter.onBindViewHolder(holder, position - 1)
         }

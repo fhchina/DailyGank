@@ -6,7 +6,6 @@ import android.support.design.widget.BottomSheetBehavior
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
-import android.widget.ImageButton
 import com.bumptech.glide.Glide
 import com.zzhoujay.dailygank.common.Config
 import com.zzhoujay.dailygank.data.DailyProvider
@@ -25,6 +24,8 @@ class MainActivity : AppCompatActivity() {
     val dateProvider: DateProvider by lazy { DateProvider() }
     val bottomSheetCallback: TaskQueueBottomSheetCallback by lazy { TaskQueueBottomSheetCallback() }
     val handler: Handler by lazy { Handler(mainLooper) }
+
+    var dailyProvider: DailyProvider? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,14 +58,17 @@ class MainActivity : AppCompatActivity() {
                 val c = Calendar.getInstance()
                 if (date != null) {
                     c.time = date
+                    dailyProvider= DailyProvider(c)
                 } else {
-                    val dates = DataManager.load(dateProvider, updateTime = updateTime)
-                    if (dates != null && dates.size > 0) {
-                        c.time = dates[0]
+                    if (dailyProvider == null) {
+                        val dates = DataManager.load(dateProvider, updateTime = updateTime)
+                        if (dates != null && dates.size > 0) {
+                            c.time = dates[0]
+                        }
+                        dailyProvider = DailyProvider(c)
                     }
                 }
-                val provider = DailyProvider(c)
-                val r = DataManager.load(provider)
+                val r = DataManager.load(dailyProvider!!)
                 val g = r?.typeOfGanks("福利")
                 uiThread {
                     val currTime = System.currentTimeMillis()
@@ -124,21 +128,34 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+
+        fun switchWrapper(f:()->Unit){
+            if (statusAdapter.currStatus.equals(Status.normal)) {
+                handlerAdapter.isNormal=false
+                switch()
+            } else if (statusAdapter.currStatus.equals(Status.date)) {
+                handlerAdapter.isNormal=true
+                switch(false)
+            }
+        }
+
+
         dateAdapter.onItemCheckedListener = {
+            if (statusAdapter.currStatus.equals(Status.normal)) {
+                handlerAdapter.isNormal=false
+            } else if (statusAdapter.currStatus.equals(Status.date)) {
+                handlerAdapter.isNormal=true
+            }
             switch(false, it)
         }
 
         handlerAdapter.onListClickListener = { v, i ->
             fun switchWrapper() {
                 if (statusAdapter.currStatus.equals(Status.normal)) {
-                    if (v is ImageButton) {
-                        v.setImageResource(R.drawable.ic_arrow_back_24dp)
-                    }
+                    handlerAdapter.isNormal=false
                     switch()
                 } else if (statusAdapter.currStatus.equals(Status.date)) {
-                    if (v is ImageButton) {
-                        v.setImageResource(R.drawable.ic_date_range_black_24px)
-                    }
+                    handlerAdapter.isNormal=true
                     switch(false)
                 }
             }
