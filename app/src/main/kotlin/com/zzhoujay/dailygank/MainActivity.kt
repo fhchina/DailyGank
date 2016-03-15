@@ -22,10 +22,7 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    val dateProvider: DateProvider by lazy {
-        DateProvider()
-    }
-
+    val dateProvider: DateProvider by lazy { DateProvider() }
     val bottomSheetCallback: TaskQueueBottomSheetCallback by lazy { TaskQueueBottomSheetCallback() }
     val handler: Handler by lazy { Handler(mainLooper) }
 
@@ -79,7 +76,9 @@ class MainActivity : AppCompatActivity() {
                         statusAdapter.switch(Status.normal)
                         dailyAdapter.daily = r
                         if (g != null) {
-                            Glide.with(this@MainActivity).load(g.url).into(image)
+                            Glide.with(this@MainActivity).load(g.url)
+                                    .placeholder(R.drawable.image_default)
+                                    .into(image)
                         }
                     }
                     if (!immediatelyShow && dt < Config.Const.min_load_time) {
@@ -130,7 +129,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         handlerAdapter.onListClickListener = { v, i ->
-            fun switchWrapper(){
+            fun switchWrapper() {
                 if (statusAdapter.currStatus.equals(Status.normal)) {
                     if (v is ImageButton) {
                         v.setImageResource(R.drawable.ic_arrow_back_24dp)
@@ -184,11 +183,5 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-    }
-
-
-    companion object {
-        const val switch = 0x345
-        const val post = 0x456
     }
 }

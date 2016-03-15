@@ -16,12 +16,12 @@ interface Persistence<K, V> {
 
     fun store(k: K, v: V?)
 
-    fun lastModifyTime(k: K): Date?
+    fun lastModifyTime(k: K): Long?
 }
 
 open class ObjectPersistence<T : Serializable> : Persistence<String, T> {
 
-    override fun lastModifyTime(k: String): Date? {
+    override fun lastModifyTime(k: String): Long? {
         return IOKit.getFileLastModifyTime(File(App.app.cacheDir, "$k.cache"))
     }
 
@@ -39,7 +39,3 @@ open class ObjectPersistence<T : Serializable> : Persistence<String, T> {
             IOKit.writeObjectToFile(File(App.app.cacheDir, "$k.cache"), v)
     }
 }
-
-class DailyPersistence : ObjectPersistence<DailyGank>()
-
-class DatePersistence : ObjectPersistence<Array<Date>>()

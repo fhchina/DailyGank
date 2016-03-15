@@ -8,7 +8,7 @@ import java.security.MessageDigest
  */
 object HashKit {
 
-    private val random = java.security.SecureRandom()
+    private val random: java.security.SecureRandom by lazy { java.security.SecureRandom() }
 
     fun md5(srcStr: String): String {
         return hash("MD5", srcStr)

@@ -25,8 +25,15 @@ object DateKit {
         }
     }
 
-    fun compareDay(d1: Date, d2: Date): Int {
-        return ((d1.time - d2.time) / one_day_time).toInt()
+    fun compareDay(d1: Long, d2: Long): Int {
+        val c1 = Calendar.getInstance()
+        c1.timeInMillis = d1
+        val c2 = Calendar.getInstance()
+        c2.timeInMillis = d2
+        val dd = ( c1.get(Calendar.YEAR) - c2.get(Calendar.YEAR)) * 365 +
+                (c1.get(Calendar.MONTH) - c2.get(Calendar.MONTH)) * 30 +
+                (c1.get(Calendar.DAY_OF_MONTH) - c2.get(Calendar.DAY_OF_MONTH))
+        return dd
     }
 
     fun friendlyFormatDate(date: Date): String {

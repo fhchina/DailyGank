@@ -36,9 +36,8 @@ object DataManager {
         if (updateTime > 0) {
             val lastC = provider.lastModifyTime(provider.key())
             if (lastC != null) {
-                val currC = Date()
-                val r = DateKit.compareDay(currC, lastC)
-                needToUpdate = r >= updateTime
+                val dd = DateKit.compareDay(System.currentTimeMillis(), lastC)
+                needToUpdate = dd >= updateTime
             }
         }
         if (needToUpdate || fromNetwork) {
@@ -52,7 +51,8 @@ object DataManager {
         }
         provider.set(r)
         if (flag && r != null) {
-            provider.store(provider.key(), provider.get())
+            if (provider.needStore(r))
+                provider.store(provider.key(), provider.get())
         }
         return provider.get()
     }

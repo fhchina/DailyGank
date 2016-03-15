@@ -28,5 +28,6 @@
     <dimen name="checked_size">40dp</dimen>
 
     <dimen name="behavior_peekHeight">56dp</dimen>
+    <dimen name="image_margin">56dp</dimen>
 
 </resources>

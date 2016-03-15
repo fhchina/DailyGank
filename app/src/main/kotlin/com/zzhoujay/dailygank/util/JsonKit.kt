@@ -15,9 +15,7 @@ import java.util.*
  */
 object JsonKit {
 
-    val gson: Gson by lazy {
-        GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").create()
-    }
+    val gson: Gson by lazy { GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").create() }
 
     fun generate(json: String): Result {
         val parser = JsonParser()

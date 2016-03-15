@@ -2,9 +2,7 @@ package com.zzhoujay.dailygank.data
 
 import com.zzhoujay.dailygank.common.Config
 import com.zzhoujay.dailygank.model.DailyGank
-import com.zzhoujay.dailygank.model.DateResult
 import com.zzhoujay.dailygank.net.NetworkManger
-import com.zzhoujay.dailygank.persistence.DailyPersistence
 import com.zzhoujay.dailygank.persistence.ObjectPersistence
 import com.zzhoujay.dailygank.persistence.Persistence
 import com.zzhoujay.dailygank.util.DateKit
@@ -27,6 +25,8 @@ interface Provider<T> : Persistence<String, T> {
     fun set(t: T?)
 
     fun key(): String
+
+    fun needStore(t: T): Boolean
 }
 
 /**
@@ -57,8 +57,12 @@ abstract class PersistenceProvider<T> : Provider<T> {
         return persistence().load(k)
     }
 
-    override fun lastModifyTime(k: String): Date? {
+    override fun lastModifyTime(k: String): Long? {
         return persistence().lastModifyTime(k)
+    }
+
+    override fun needStore(t: T): Boolean {
+        return true
     }
 
 }
@@ -92,6 +96,10 @@ class DailyProvider(val day: Calendar) : UniversalProvider<DailyGank>(HashKit.md
         return result.daily
     }
 
+    override fun needStore(t: DailyGank): Boolean {
+        return (!t.ganks.isEmpty()&&!t.types.isEmpty())
+    }
+
 }
 
 class DateProvider : UniversalProvider<Array<Date>>(Config.Const.date_cache_file_name) {
@@ -105,5 +113,13 @@ class DateProvider : UniversalProvider<Array<Date>>(Config.Const.date_cache_file
             throw RuntimeException("request data failure")
         }
         return result.history
+    }
+
+    override fun needStore(t: Array<Date>): Boolean {
+        if (t.size > 0) {
+            val dd = DateKit.compareDay(System.currentTimeMillis(), t[0].time)
+            return dd <= 0
+        }
+        return false
     }
 }

@@ -37,9 +37,9 @@ object IOKit {
         return null
     }
 
-    fun getFileLastModifyTime(file: File): Date? {
+    fun getFileLastModifyTime(file: File): Long? {
         if (file.exists()) {
-            return Date(file.lastModified())
+            return file.lastModified()
         }
         return null
     }
