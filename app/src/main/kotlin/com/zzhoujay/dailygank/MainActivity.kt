@@ -93,7 +93,6 @@ class MainActivity : AppCompatActivity() {
         alert.show()
         doAsync {
             val dates = DataManager.load(dateProvider)
-            Log.i("gg", "gg")
             if (dates == null) {
                 val al = alert(R.string.load_failure, R.string.title_alert) {
                     positiveButton(R.string.button_retry) {
