@@ -19,7 +19,7 @@ object TextKit {
         var start: Int
         for (gh in ganks) {
             start = builder.length
-            builder.append(" • ")
+            builder.append(" •  ")
             builder.setSpan(StyleSpan(Typeface.BOLD), start, builder.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             start = builder.length
             builder.append(gh.desc)

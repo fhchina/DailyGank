@@ -49,7 +49,7 @@ object JsonKit {
         val error = root.get("error").asBoolean
         val results = root.getAsJsonArray("results")
         if (!error) {
-            val r = results.map { DateKit.parserDateFromDay(it.asString) }
+            val r = results.map { it.asString }
             return DateResult(error, r.toTypedArray())
         }
         return DateResult(error, emptyArray())

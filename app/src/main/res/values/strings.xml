@@ -1,6 +1,13 @@
 <resources>
 
-    <string name="network_error">网没有网络连接，请连接网络后重试</string>
+    <string name="network_error">没有网络连接，请连接网络后重试</string>
+    <string name="load_failure">加载失败，是否重试？</string>
+    <string name="alert_loading">加载中…</string>
+
+    <string name="title_alert">提示</string>
+
+    <string name="button_retry">重试</string>
+    <string name="button_exit">退出</string>
 
     <string name="app_name">干货日报</string>
     <string name="text_url">干货URL</string>
@@ -25,4 +32,10 @@
 
     <string name="text_normal">显示干货</string>
     <string name="text_date">选择时间</string>
+    <string name="title_activity_main2">Main2Activity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
 </resources>

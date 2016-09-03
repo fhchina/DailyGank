@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     style="@style/GankItem"
     android:layout_height="@dimen/date_item_height"
     android:gravity="center_vertical"
@@ -15,14 +13,5 @@
         android:layout_weight="1"
         android:text="2016年3月15日"
         android:textSize="@dimen/material_sub_head" />
-
-    <ImageView
-        android:id="@+id/checked"
-        android:layout_width="@dimen/checked_size"
-        android:layout_height="@dimen/checked_size"
-        android:layout_margin="5dp"
-        android:visibility="gone"
-        app:srcCompat="@drawable/ic_done_24dp"
-        tools:ignore="MissingPrefix" />
 
 </LinearLayout>

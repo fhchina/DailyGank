@@ -15,6 +15,10 @@ object DataManager {
     const val THREE_DAY = 3
     const val ONE_WEEK = 7
 
+    fun <T> refresh(provider: Provider<T>): T? {
+        return load(provider, fromNetwork = true, userCache = false)
+    }
+
     /**
      * 通过Provider自动选择从网络、缓存加载数据
      */

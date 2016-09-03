@@ -1,5 +1,6 @@
 package com.zzhoujay.dailygank.util
 
+import com.zzhoujay.dailygank.model.Day
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -25,12 +26,34 @@ object DateKit {
         }
     }
 
+    fun compareToday(day: Day): Int {
+        val c = Calendar.getInstance()
+        val y = c.get(Calendar.YEAR)
+        val m = c.get(Calendar.MONTH) + 1
+        val d = c.get(Calendar.DAY_OF_MONTH)
+        val r: Int
+        r = if (y > day.year) {
+            -1
+        } else if (y < day.year) {
+            1
+        } else {
+            if (m > day.month) {
+                -1
+            } else if (m < day.month) {
+                1
+            } else {
+                day.day - d
+            }
+        }
+        return r
+    }
+
     fun compareDay(d1: Long, d2: Long): Int {
         val c1 = Calendar.getInstance()
         c1.timeInMillis = d1
         val c2 = Calendar.getInstance()
         c2.timeInMillis = d2
-        val dd = ( c1.get(Calendar.YEAR) - c2.get(Calendar.YEAR)) * 365 +
+        val dd = (c1.get(Calendar.YEAR) - c2.get(Calendar.YEAR)) * 365 +
                 (c1.get(Calendar.MONTH) - c2.get(Calendar.MONTH)) * 30 +
                 (c1.get(Calendar.DAY_OF_MONTH) - c2.get(Calendar.DAY_OF_MONTH))
         return dd

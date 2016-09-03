@@ -2,6 +2,7 @@ package com.zzhoujay.dailygank.data
 
 import com.zzhoujay.dailygank.common.Config
 import com.zzhoujay.dailygank.model.DailyGank
+import com.zzhoujay.dailygank.model.Day
 import com.zzhoujay.dailygank.net.NetworkManger
 import com.zzhoujay.dailygank.persistence.ObjectPersistence
 import com.zzhoujay.dailygank.persistence.Persistence
@@ -82,12 +83,12 @@ abstract class UniversalProvider<T : Serializable>(val key: String) : Persistenc
 }
 
 
-class DailyProvider(val day: Calendar) : UniversalProvider<DailyGank>(HashKit.md5("year:${day.get(Calendar.YEAR)}-month:${day.get(Calendar.MONTH)}-day:${day.get(Calendar.DAY_OF_MONTH)}")) {
+class DailyProvider(val day: Day) : UniversalProvider<DailyGank>(HashKit.md5("year:${day.year}-month:${day.month}-day:${day.day}")) {
 
     override fun loadFromNetwork(): DailyGank {
         val request = Request.Builder()
                 .get()
-                .url(String.format(Config.Url.daily_url, day.get(Calendar.YEAR), day.get(Calendar.MONTH) + 1, day.get(Calendar.DAY_OF_MONTH)))
+                .url(String.format(Config.Url.daily_url, day.year, day.month, day.day))
                 .build()
         val result = JsonKit.generate(NetworkManger.requestStringSync(request))
         if (result.error) {
@@ -97,13 +98,13 @@ class DailyProvider(val day: Calendar) : UniversalProvider<DailyGank>(HashKit.md
     }
 
     override fun needStore(t: DailyGank): Boolean {
-        return (!t.ganks.isEmpty()&&!t.types.isEmpty())
+        return (!t.ganks.isEmpty() && !t.types.isEmpty())
     }
 
 }
 
-class DateProvider : UniversalProvider<Array<Date>>(Config.Const.date_cache_file_name) {
-    override fun loadFromNetwork(): Array<Date> {
+class DateProvider : UniversalProvider<Array<Day>>(Config.Const.date_cache_file_name) {
+    override fun loadFromNetwork(): Array<Day> {
         val request = Request.Builder()
                 .get()
                 .url(Config.Url.history_url)
@@ -112,13 +113,15 @@ class DateProvider : UniversalProvider<Array<Date>>(Config.Const.date_cache_file
         if (result.error) {
             throw RuntimeException("request data failure")
         }
-        return result.history
+        val list = result.history.map { Day.fromString(it) }
+        return list.toTypedArray()
     }
 
-    override fun needStore(t: Array<Date>): Boolean {
+    override fun needStore(t: Array<Day>): Boolean {
         if (t.size > 0) {
-            val dd = DateKit.compareDay(System.currentTimeMillis(), t[0].time)
-            return dd <= 0
+            return DateKit.compareToday(t[0]) >= 0
+//            val dd = DateKit.compareDay(System.currentTimeMillis(), t[0].time)
+//            return dd <= 0
         }
         return false
     }

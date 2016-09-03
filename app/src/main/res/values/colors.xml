@@ -7,4 +7,7 @@
     <color name="gap_color">@color/material_grey_400</color>
 
     <color name="drawer_color">@color/material_white</color>
+
+    <color name="item_select_color">#df1f1f</color>
+    <color name="item_normal_color">#5f19ba</color>
 </resources>

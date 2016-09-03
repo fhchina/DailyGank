@@ -21,7 +21,7 @@ data class Gank(@SerializedName("_id")
                 var type: String,
                 var url: String,
                 var used: Boolean = false,
-                var who: String?="") : Serializable, Parcelable {
+                var who: String? = "") : Serializable, Parcelable {
     constructor(source: Parcel) : this(source.readString(), source.readString(), source.readSerializable() as Date, source.readString(), source.readSerializable() as Date, source.readString(), source.readString(), 1.toByte().equals(source.readByte()), source.readString())
 
     override fun describeContents(): Int {
@@ -79,9 +79,17 @@ data class DailyGank(val types: Array<String>, val ganks: Array<Array<Gank>>) : 
         }
         return null
     }
+
+    override fun equals(other: Any?): Boolean {
+        return super.equals(other)
+    }
+
+    override fun hashCode(): Int {
+        return super.hashCode()
+    }
 }
 
 data class Result(val error: Boolean, val daily: DailyGank) : Serializable
 
 
-data class DateResult(val error: Boolean, val history: Array<Date>) : Serializable
+data class DateResult(val error: Boolean, val history: Array<String>) : Serializable

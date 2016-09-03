@@ -21,7 +21,6 @@
     <style name="GankItem">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:background">@color/drawer_color</item>
         <item name="android:paddingLeft">@dimen/sheet_padding</item>
         <item name="android:paddingRight">@dimen/sheet_padding</item>
         <item name="android:foreground">?attr/selectableItemBackground</item>
@@ -31,5 +30,9 @@
     <style name="MoreMenu">
         <item name="android:background">?attr/selectableItemBackground</item>
     </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>
